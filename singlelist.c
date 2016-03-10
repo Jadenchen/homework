@@ -108,28 +108,7 @@ List * insert (List* head, int value){
 	printf ("insert a node");
 	return head;
 }
-
-/*int listSize (List* head){
-	assert(head);
-	int size = 0;
-	while (head->next != NULL)
-		size++;
-	return size;
-}
-
-List* bubble_sort(List* head){
-	List* tmp = head;
-	int size = listSize(tmp);
-	int i,j;
-	for ( i = 0; i < (size -1);i++){
-		for(j = 0; j < (size-i-1); j++)
-			if((head+j)->val > (head+j+1)->val){
-				swap(head, head+j, head+j+1);
-			}
-	}
-	return head;
 	
-}*/
 int listsize(List *head){
 	assert(head);
 	int i = 0;
@@ -146,38 +125,11 @@ int listsize(List *head){
 
 List *bubblesort(List *head){
 	assert (head);
-//	int size = listsize(head);
-	
-//	int i, j;
-
-/*	for (i = 0; i < size-1;i++)
-		for (j = 0; j < size-1-i; j++){
-			if((head+j)->val > (head+j+1)->val){
-				tmp = (head+j)->val;
-				(head+j)->val = (head+j+1)->val;
-				(head+j+1)->val = tmp;
-			}
-
-		}
-*/	
 	List *tmp = head;
-	/*for (i = 0 ; i< size-1; i++)
-		for (j = 0; j< size-1-i; j++){
-			printf ("tmp val %d\n", tmp->val);
-			printf ("tmp val %d\n", tmp->next->val);
-			if(tmp->val > tmp->next->val){
-				swap(head, tmp, tmp->next);
-				tmp = tmp->next;	
-			}
-		}*/
-
-
 	while (tmp){		
 		assert (tmp->next);
 		List *tmp1 = tmp->next;
 		while (tmp1){
-			//printf ("tmp val %d \n", tmp->val);
-			//printf ("tmp1 val %d\n", tmp1->val);
 			if (tmp->val > tmp1->val)
 				swap(head, tmp, tmp1);
 			tmp1 = tmp1->next;
