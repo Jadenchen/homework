@@ -7,7 +7,7 @@ typedef struct list {
 	struct list *next;
 }List;
 
-void swap(List* head, List* a, List* b){
+List* swap(List* head, List* a, List* b){
 
 	if (a == b ) return;
 	//you can use assert function to check
@@ -15,98 +15,46 @@ void swap(List* head, List* a, List* b){
 	assert(b);
 	assert(head);
 
-	List* prev_a = NULL;
-	List* prev_b = NULL;
-	List* curr = head;
-	
-	while (curr && curr->next != a){
-		prev_a = curr;
-		curr = curr->next;
-	}
-	
-	curr=head;
-	while (curr && curr->next != b){
-		prev_b = curr;
-		curr = curr->next;
-	} 
-	
-	if(prev_a != NULL)
-		prev_a->next = b;
-	else 
-		head = b;
-
-	if(prev_b != NULL)
-		prev_b->next = a;
-	else
-		head = a;
-	
-	List* tmp = b->next;
-	b->next = a->next;
-	a->next = tmp;
-}
-
-List* swap1 (List *head, List *a, List *b){
-	assert(head);
-	assert(a);
-	assert(b);
-	// a = b
-	if (a == b)
-		return NULL;
-	// a | b is head
-	/*if(a == head){
-		//a is head 
-		head = b;
-		List *tmp = head->next;
-		head->next = b->next;
-		b->next = tmp;
-	}else if (b == head){
-		head = a;
-		List *tmp = head->next;
-		head->next = a->next;
-		a->next = tmp;
-	}*/
-
-	//better solution 
+	//a or b are head
 	if (a == head || b == head){
-		List *prev = head;
-		List *nohead = (a = head)? b:a;
-		for (;prev->next != nohead; prev= prev->next);
-		if (!prev)
-			return NULL;
+		List *nohead = (a = head)?b:a;
+		List *curr = head;
+		
+		for (;curr->next != nohead; curr=curr->next);
+		if (!curr)
+			printf ("cannot find node\n");
+
 		head = nohead;
-		prev->next = head;
-		prev = nohead->next;
-		nohead->next = head->next;
-		head->next = prev;
+		curr->next = head;
+		curr = b->next;
+		b->next = head->next;
+		head->next = curr;	
 	}
 
-	List *prev_a = head;
-        List *prev_b = head;
-
-        for (;prev_a->next != a; prev_a = prev_a->next);
-        for (;prev_b->next != b; prev_b = prev_b->next);
-
-	// a and b are not all head
-	//protection code 
+	List* prev_a = head;
+	List* prev_b = head;
+	for (;prev_a->next != a; prev_a = prev_a->next);
+	for (;prev_b->next != b; prev_b = prev_b->next);
 
 	if (!prev_a || !prev_b)
-		return NULL;
+		printf("one of two node are error\n");
 
-	 prev_a->next = b;
-         prev_b->next = a;
-         prev_a = a->next;
-         a->next = b->next;
-         b->next = prev_a;
+	prev_a->next = b;
+	prev_b->next = a;
+	prev_b = b->next;
+	b->next = a->next;
+	a->next = prev_b;
 
 	return head;
 }
-
 
 //delete ine list
 List*  delete (List *head, List *a){
 	assert (head);
 	assert(a);
 	//a = head
+
+	printf ("delete \n");
 	if (a == head){
 		head = a->next;
 		free(a);
@@ -123,39 +71,45 @@ List*  delete (List *head, List *a){
 	return head;
 }
 
+//search function 
 List * search(List *head, int value){
 	assert (head);
-	List *tmp;
-	while (head){
-		if(head->val == value){
-			tmp = head;
+	List *tmp = head;
+
+	while (tmp){
+		if(tmp->val == value){
+			printf ("find tmp node value %d \n", tmp->val);
 			return tmp;
 		}
-		head = head->next;	
+		tmp = tmp->next;	
 	}
 	
 	return NULL;
 }
 
-
-
-List * insert (List* head, List* a){	
-	assert(a);
-
+//insert function
+List * insert (List* head, int value){	
+	assert(head);
+	List *list = (List *) malloc(sizeof(List *));
+	if(!list)
+		printf ("create failed");	
 	//add to last
 	if (head){
 		//add to last
 		List *curr = head;	
 		for (;curr->next != NULL;curr=curr->next);
-		curr->next = a;
+		curr->next = list;
+		list->val = value;
+		list->next = NULL; // this is important
 	}else{
-		head = a;
+		head = list;
+		head->val = value;
 	}
-
+	printf ("insert a node");
 	return head;
 }
 
-int listSize (List* head){
+/*int listSize (List* head){
 	assert(head);
 	int size = 0;
 	while (head->next != NULL)
@@ -175,12 +129,71 @@ List* bubble_sort(List* head){
 	}
 	return head;
 	
+}*/
+int listsize(List *head){
+	assert(head);
+	int i = 0;
+	List *tmp = head;
+	while (tmp){
+		tmp = tmp->next;
+		i++;
+	}
+	
+	return i;
+}
+
+
+
+List *bubblesort(List *head){
+	assert (head);
+//	int size = listsize(head);
+	
+//	int i, j;
+
+/*	for (i = 0; i < size-1;i++)
+		for (j = 0; j < size-1-i; j++){
+			if((head+j)->val > (head+j+1)->val){
+				tmp = (head+j)->val;
+				(head+j)->val = (head+j+1)->val;
+				(head+j+1)->val = tmp;
+			}
+
+		}
+*/	
+	List *tmp = head;
+	/*for (i = 0 ; i< size-1; i++)
+		for (j = 0; j< size-1-i; j++){
+			printf ("tmp val %d\n", tmp->val);
+			printf ("tmp val %d\n", tmp->next->val);
+			if(tmp->val > tmp->next->val){
+				swap(head, tmp, tmp->next);
+				tmp = tmp->next;	
+			}
+		}*/
+
+
+	while (tmp){		
+		assert (tmp->next);
+		List *tmp1 = tmp->next;
+		while (tmp1){
+			//printf ("tmp val %d \n", tmp->val);
+			//printf ("tmp1 val %d\n", tmp1->val);
+			if (tmp->val > tmp1->val)
+				swap(head, tmp, tmp1);
+			tmp1 = tmp1->next;
+		}
+	
+		tmp = tmp->next;
+	}	
+
+	return head;
+
 }
 
 List* create(List* head, int value){
 	
 	//assert(head);
-	List* list;
+	List* list = NULL;
 	List* curr = head;
 
 	list = (List *)malloc(sizeof(List *));
@@ -193,13 +206,15 @@ List* create(List* head, int value){
 		while (curr->next != NULL){
 			curr = curr->next;
 		}
-		curr -> next = list;
+		curr->next = list;
 		list->val = value;
+		list->next = NULL;
 		return head;
 
 	}else {
 		curr = list;
 		curr->val = value;
+		curr->next = NULL;
 		return curr;
 	}
 
@@ -229,27 +244,44 @@ void printList (List *head){
 	}
 }
 
+void test (List *head){
+	assert(head);
+	List *tmp = head;
+	tmp++;
+	printf ("value = %d\n", tmp->val);	
+
+
+}
+
 int main (void){
 	//just a test 
 	int i;
-	int max = 5;
-	//List *head = (List *)malloc(sizeof(List *));
-	//assert(head);
-	List *head;
+	int max = 3;
+	int a[]	= {1,3,2};
+ 
+	List *head = NULL;
 	for (i = 0; i < max; i++){		
-		head = create(head,i);
+		head = create(head,a[i]);
 	}
 	
 	printList(head);
 	
-	List *tmp = search(head, 3);
+/*	List *tmp = search(head, 3);
 	if (!tmp)
 		printf("cannot find tmp\n");
+	head = delete(head, tmp);
+	printList(head);
 
+	head = insert(head, 7);
+	printList(head);
+	printf ("List size %d\n", listsize(head));
+	//test(head);
+*/
+	head = bubblesort(head);
+	printList(head);
+	
 	freeList(head);
 
-	//print list
-	//swap()
 	return 0;
 	
 }
