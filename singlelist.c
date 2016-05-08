@@ -24,11 +24,13 @@ List* swap(List* head, List* a, List* b){
 		if (!curr)
 			printf ("cannot find node\n");
 
-		head = nohead;
+		
 		curr->next = head;
 		curr = b->next;
 		b->next = head->next;
 		head->next = curr;	
+		head = nohead;
+		return head;
 	}
 
 	List* prev_a = head;
